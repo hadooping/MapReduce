@@ -1,0 +1,42 @@
+Enter file contents hereimport java.io.IOException;
+import java.util.List;
+
+import junit.framework.Assert;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.FileInputFormat;
+import org.apache.hadoop.mapred.FileOutputFormat;
+import org.apache.hadoop.mapred.JobClient;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mrunit.MapDriver;
+import org.apache.hadoop.mrunit.MapReduceDriver;
+import org.apache.hadoop.mrunit.ReduceDriver;
+import org.apache.hadoop.mrunit.types.Pair;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
+
+ 
+
+public class MaxTemperature {
+
+	public static void main(String[] args) throws IOException{
+		JobConf conf = new JobConf();
+		conf.setJobName("Max Temperature");
+		
+		FileInputFormat.addInputPath(conf, new Path(args[0]));
+		FileOutputFormat.setOutputPath(conf, new Path(args[1]));
+		
+		conf.setMapperClass(MaxTemperatureMapper.class);
+		conf.setReducerClass(MaxTemperatureReducer.class);
+
+		conf.setOutputKeyClass(Text.class);
+		conf.setOutputValueClass(IntWritable.class);
+		
+		JobClient.runJob(conf);
+	}
+}
